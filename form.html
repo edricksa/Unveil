@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNVEIL — Detail Booking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Cormorant+Garamond:ital,wght@0,400;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --navy:        #0d1f3c;
+  --navy-mid:    #122340;
+  --navy-surface:#162b4d;
+  --navy-card:   #1a3259;
+  --navy-border: #2a4a72;
+  --blue-accent: #2563a8;
+  --blue-bright: #6aabf7;
+  --gold:        #c9a94a;
+  --gold-light:  #e8cc7e;
+  --cream:       #f0ebdf;
+  --white:       #ffffff;
+  --muted:       rgba(240,235,223,0.55);
+  --font-display:'Playfair Display', serif;
+  --font-body:   'Cormorant Garamond', serif;
+  --font-ui:     'DM Sans', sans-serif;
+}
+
+body {
+  font-family: var(--font-ui);
+  background: var(--navy);
+  color: var(--cream);
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  background: var(--navy-mid);
+  border-bottom: 1px solid var(--navy-border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 56px;
+  position: sticky; top: 0; z-index: 100;
+}
+.back-btn {
+  font-family: var(--font-ui); font-size: 12px; font-weight: 400;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); text-decoration: none;
+  padding: 6px 14px; border: 1px solid var(--navy-border);
+  transition: all .2s; display: flex; align-items: center; gap: 8px;
+}
+.back-btn:hover { color: var(--cream); border-color: var(--gold); }
+.topbar-logo {
+  font-family: var(--font-display); font-size: 1.3rem; font-weight: 700;
+  letter-spacing: .2em; color: var(--white);
+}
+.topbar-logo em { color: var(--gold); font-style: italic; }
+.topbar-step {
+  font-size: 11px; letter-spacing: .1em; color: var(--muted);
+}
+.topbar-step span { color: var(--gold); }
+
+/* ── LAYOUT ── */
+.page-layout {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  max-width: 1000px;
+  margin: 0 auto;
+  min-height: calc(100vh - 56px);
+  gap: 0;
+}
+
+/* ── LEFT SUMMARY ── */
+.summary-panel {
+  padding: 3rem 2.5rem;
+  border-right: 1px solid var(--navy-border);
+  display: flex; flex-direction: column; gap: 2rem;
+}
+
+.summary-title {
+  font-family: var(--font-display);
+  font-size: 2rem; font-weight: 900; font-style: italic;
+  color: var(--white); line-height: 1.1;
+}
+.summary-subtitle {
+  font-family: var(--font-body);
+  font-style: italic; font-size: 1rem; color: var(--muted);
+  margin-top: 6px;
+}
+
+.sum-block {
+  background: var(--navy-card);
+  border: 1px solid var(--navy-border);
+}
+
+.sum-block-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--navy-border);
+  font-size: 9px; font-weight: 500; letter-spacing: .4em;
+  text-transform: uppercase; color: var(--gold);
+}
+
+.sum-block-body { padding: 16px; }
+
+.sum-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 0;
+}
+.sum-key { font-size: 12px; color: var(--muted); }
+.sum-val { font-size: 12px; color: var(--cream); font-weight: 500; }
+
+/* Seat tags */
+.seat-tags {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  min-height: 32px; align-items: flex-start;
+}
+.seat-tag {
+  background: var(--gold); color: var(--navy);
+  font-size: 11px; font-weight: 500;
+  padding: 4px 12px;
+}
+.seat-tag-empty {
+  font-size: 12px; font-style: italic; color: rgba(240,235,223,.25);
+}
+
+/* Price total */
+.price-total-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding-top: 12px; margin-top: 6px;
+  border-top: 1px solid var(--navy-border);
+}
+.price-total-label { font-size: 13px; color: var(--cream); }
+.price-total-val {
+  font-family: var(--font-display);
+  font-size: 1.8rem; font-weight: 700; color: var(--gold);
+}
+
+/* Payment info */
+.payment-box {
+  background: var(--navy-surface);
+  border: 1px solid var(--navy-border);
+  border-left: 3px solid var(--gold);
+  padding: 16px;
+}
+.payment-box p {
+  font-family: var(--font-body);
+  font-size: 0.95rem; line-height: 1.7; color: var(--muted);
+}
+.payment-box em { color: var(--cream); font-style: normal; font-weight: 500; }
+.account-num {
+  font-family: var(--font-display);
+  font-size: 1.4rem; font-weight: 700;
+  color: var(--gold); letter-spacing: .1em;
+  display: block; margin-top: 10px;
+}
+.account-sub {
+  font-size: 11px; letter-spacing: .1em; color: var(--muted); margin-top: 2px; display: block;
+}
+
+/* ── RIGHT FORM ── */
+.form-panel {
+  background: var(--navy-mid);
+  padding: 3rem 2rem;
+  display: flex; flex-direction: column; gap: 1.5rem;
+}
+
+.form-heading {
+  font-family: var(--font-display);
+  font-size: 1.1rem; font-weight: 700; color: var(--white);
+  letter-spacing: .05em; margin-bottom: -.5rem;
+}
+
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+
+.form-label {
+  font-size: 9px; font-weight: 500; letter-spacing: .35em;
+  text-transform: uppercase; color: var(--muted);
+}
+
+.form-input {
+  background: var(--navy-card);
+  border: 1px solid var(--navy-border);
+  padding: 12px 14px;
+  font-family: var(--font-ui); font-size: 14px; color: var(--cream);
+  outline: none; transition: border-color .2s; width: 100%;
+}
+.form-input::placeholder { color: rgba(240,235,223,.25); }
+.form-input:focus { border-color: var(--blue-accent); }
+.form-input.error { border-color: #ef4444; }
+
+.form-divider {
+  height: 1px; background: var(--navy-border); margin: .5rem 0;
+}
+
+/* File upload */
+.file-area {
+  position: relative;
+  border: 1px dashed var(--navy-border);
+  padding: 20px 16px; text-align: center;
+  cursor: pointer; transition: all .2s;
+  background: var(--navy-card);
+}
+.file-area:hover { border-color: var(--blue-accent); background: rgba(37,99,168,.08); }
+.file-area input {
+  position: absolute; inset: 0; opacity: 0;
+  cursor: pointer; width: 100%; height: 100%;
+}
+.file-icon { font-size: 1.5rem; display: block; margin-bottom: 6px; }
+.file-hint { font-size: 12px; color: var(--muted); }
+.file-name { font-size: 12px; color: var(--gold); margin-top: 6px; display: none; }
+
+/* Submit button */
+.btn-submit {
+  width: 100%; padding: 15px;
+  background: var(--gold); border: none; color: var(--navy);
+  font-family: var(--font-ui); font-size: 13px; font-weight: 500;
+  letter-spacing: .15em; text-transform: uppercase;
+  cursor: pointer; transition: background .25s;
+  position: relative; overflow: hidden; margin-top: .5rem;
+}
+.btn-submit::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--gold-light); transform: translateX(-100%);
+  transition: transform .35s;
+}
+.btn-submit:hover::before { transform: translateX(0); }
+.btn-submit span { position: relative; z-index: 1; }
+
+/* ── SUCCESS OVERLAY ── */
+.overlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(13,31,60,.92); backdrop-filter: blur(8px);
+  align-items: center; justify-content: center;
+}
+.overlay.show { display: flex; }
+.overlay-box {
+  background: var(--navy-surface); border: 1px solid var(--navy-border);
+  padding: 3rem 2.5rem; text-align: center; max-width: 380px; width: 90%;
+  animation: popUp .35s ease;
+}
+@keyframes popUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+.ov-icon { font-size: 2.8rem; margin-bottom: 1rem; }
+.ov-title {
+  font-family: var(--font-display); font-size: 1.8rem; font-weight: 700;
+  font-style: italic; color: var(--white); margin-bottom: .5rem;
+}
+.ov-sub { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 1.5rem; }
+.ov-seats { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 1.5rem; }
+.ov-close {
+  display: inline-block; padding: 12px 32px;
+  border: 1px solid var(--gold); color: var(--gold);
+  font-family: var(--font-ui); font-size: 12px; font-weight: 500;
+  letter-spacing: .15em; text-transform: uppercase;
+  cursor: pointer; transition: all .2s; background: transparent;
+}
+.ov-close:hover { background: var(--gold); color: var(--navy); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 760px) {
+  .page-layout { grid-template-columns: 1fr; }
+  .summary-panel { padding: 2rem 1.5rem; border-right: none; border-bottom: 1px solid var(--navy-border); }
+  .form-panel { padding: 2rem 1.5rem; }
+  .topbar { padding: 0 1rem; }
+  .topbar-step { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="index.html" class="back-btn">&#8592; Pilih Kursi</a>
+  <div class="topbar-logo">UN<em>VEIL</em></div>
+  <div class="topbar-step">Langkah <span>2</span> / 2 — Data Pemesan</div>
+</div>
+
+<div class="page-layout">
+
+  <!-- ── LEFT: SUMMARY ── -->
+  <div class="summary-panel">
+
+    <div>
+      <div class="summary-title">Konfirmasi<br>Pesanan</div>
+      <div class="summary-subtitle">Periksa kembali detail sebelum melanjutkan</div>
+    </div>
+
+    <!-- Detail pertunjukan -->
+    <div class="sum-block">
+      <div class="sum-block-header">Detail Pertunjukan</div>
+      <div class="sum-block-body">
+        <div class="sum-row"><span class="sum-key">Judul</span><span class="sum-val">UNVEIL — Musical Drama</span></div>
+        <div class="sum-row"><span class="sum-key">Tanggal</span><span class="sum-val">15 April 2026</span></div>
+        <div class="sum-row"><span class="sum-key">Waktu</span><span class="sum-val">12:00 WIB</span></div>
+        <div class="sum-row"><span class="sum-key">Tempat</span><span class="sum-val">Aula SMA Atisa Dipamkara · Lt. 3</span></div>
+      </div>
+    </div>
+
+    <!-- Kursi dipilih -->
+    <div class="sum-block">
+      <div class="sum-block-header">Kursi Dipilih</div>
+      <div class="sum-block-body">
+        <div class="seat-tags" id="seatDetail">
+          <span class="seat-tag-empty">Memuat data kursi...</span>
+        </div>
+        <div class="price-total-row">
+          <span class="price-total-label">Total Pembayaran</span>
+          <span class="price-total-val" id="total">Rp 0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instruksi pembayaran -->
+    <div class="payment-box">
+      <div style="font-size:9px;font-weight:500;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">Instruksi Pembayaran</div>
+      <p>Transfer ke rekening berikut sesuai total pembayaran, lalu lampirkan bukti transfer.</p>
+      <span class="account-num">123 456 789</span>
+      <span class="account-sub">Bank Central Asia (BCA) &nbsp;·&nbsp; a.n. UNVEIL Production</span>
+    </div>
+
+  </div>
+
+  <!-- ── RIGHT: FORM ── -->
+  <div class="form-panel">
+
+    <!-- COUNTDOWN TIMER -->
+    <div class="countdown-wrap">
+      <div class="countdown-top">
+        <span class="countdown-label">⏱ Sisa waktu konfirmasi</span>
+        <span class="countdown-time" id="countdown-timer">5:00</span>
+      </div>
+      <div class="countdown-track">
+        <div class="countdown-fill" id="countdown-bar"></div>
+      </div>
+      <p class="countdown-msg" id="countdown-msg">Kursi akan dilepas otomatis jika waktu habis</p>
+    </div>
+
+    <div class="form-heading">Data Pemesan</div>
+
+    <div class="form-group">
+      <label class="form-label">Nama Lengkap</label>
+      <input type="text" id="name" class="form-input" placeholder="Nama sesuai identitas">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Alamat Email</label>
+      <input type="email" id="email" class="form-input" placeholder="email@contoh.com">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">No. WhatsApp</label>
+      <input type="text" id="phone" class="form-input" placeholder="08xxxxxxxxxx">
+    </div>
+
+    <div class="form-divider"></div>
+
+    <div class="form-group">
+      <label class="form-label">Bukti Transfer</label>
+      <div class="file-area" id="fileArea">
+        <input type="file" id="bukti" accept="image/*,application/pdf" onchange="handleFile(event)">
+        <span class="file-icon">📎</span>
+        <span class="file-hint">Klik atau seret file bukti transfer<br><span style="font-size:10px;opacity:.6;">PNG, JPG, atau PDF</span></span>
+        <span class="file-name" id="fileName"></span>
+      </div>
+    </div>
+
+    <button class="btn-submit" id="submitBtn">
+      <span id="btnLabel">Konfirmasi Pesanan</span>
+    </button>
+
+    <p style="font-size:11px;color:var(--muted);text-align:center;line-height:1.6;margin-top:-.5rem;">
+      Dengan memesan, kamu menyetujui ketentuan yang berlaku.<br>Konfirmasi akan dikirim via WhatsApp &amp; Email.
+    </p>
+
+  </div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="overlay-box">
+    <div class="ov-icon">🎭</div>
+    <div class="ov-title">Pesanan Terkirim!</div>
+    <div class="ov-sub">Terima kasih, <strong id="ovName"></strong>!<br>Pesanan kamu sedang diproses. Kami akan menghubungi kamu via WhatsApp &amp; Email segera.</div>
+    <div class="ov-seats" id="ovSeats"></div>
+    <button class="ov-close" onclick="window.location.href='index.html'">Kembali ke Beranda</button>
+  </div>
+</div>
+
+
+<script>
+  // File upload UI handler (non-module, form.js handles the rest)
+  function handleFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const nm = document.getElementById('fileName');
+    nm.textContent = '📄 ' + file.name;
+    nm.style.display = 'block';
+    document.getElementById('fileArea').style.borderColor = 'var(--gold)';
+    document.getElementById('fileArea').style.borderStyle = 'solid';
+  }
+
+  document.querySelectorAll('.form-input').forEach(el => {
+    el.addEventListener('input', () => el.classList.remove('error'));
+  });
+</script>
+
+<script type="module" src="form.js"></script>
+</body>
+</html>
