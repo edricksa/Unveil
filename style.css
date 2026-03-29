@@ -16,8 +16,8 @@
   --cream:       #f0ebdf;
   --white:       #ffffff;
   --muted:       rgba(240,235,223,0.55);
-  --seat-avail:  #1e3d6b;
-  --seat-hover:  #2e6ecc;
+  ---avail:  #1e3d6b;
+  ---hover:  #2e6ecc;
   --seat-sel:    #c9a94a;
   --seat-booked: #2e1515;
   --red :#911d1d;
@@ -152,7 +152,7 @@ body {
 }
 
 .seat {
-  width: 31px; height: 31px;
+  width: 28px; height: 28px;
   background: var(--blue-seat);
   border: 1px solid rgba(106,171,247,.2);
   border-radius: 5px 5px 3px 3px;
