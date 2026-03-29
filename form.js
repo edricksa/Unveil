@@ -144,6 +144,7 @@ startCountdown();
 // SUBMIT
 document.getElementById("submitBtn").onclick = async () => {
   const name  = document.getElementById("name").value.trim();
+  const kelas = document.getElementById("kelas").value.trim();
   const email = document.getElementById("email").value.trim();
   const phone = document.getElementById("phone").value.trim();
   const file  = document.getElementById("bukti").files[0];
@@ -155,7 +156,7 @@ document.getElementById("submitBtn").onclick = async () => {
     return;
   }
 
-  if (!name || !email || !phone || !file) {
+  if (!name || !kelas || !email || !phone || !file) {
     alert("Lengkapi semua data!");
     return;
   }
@@ -171,7 +172,7 @@ document.getElementById("submitBtn").onclick = async () => {
     try {
       // 1. Simpan booking permanen ke Firestore
       await addDoc(collection(db, "bookings"), {
-        name, email, phone,
+        name, kelas, email, phone,
         seats: selectedSeats,
         total,
         time: new Date()
@@ -185,6 +186,7 @@ document.getElementById("submitBtn").onclick = async () => {
         method: "POST",
         body: JSON.stringify({
           name,
+          kelas,
           email,
           phone,
           seats: selectedSeats.join(", "),
