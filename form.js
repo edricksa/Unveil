@@ -37,61 +37,66 @@ if (!selectedSeats.length || (Date.now() - lockTime) >= LOCK_MS) {
 }
 
 // CEK VIP
-function isVIP(seat) {
-  return ["A","B","C","D","E"].includes(seat.charAt(0));
+function getTier(seat) {
+  const row = seat.charAt(0);
+
+  if (["A","B","C"].includes(row)) return "first";
+  if (["D","E","F","G"].includes(row)) return "business";
+  return "economy";
 }
 
-const vip    = selectedSeats.filter(isVIP);
-const reg    = selectedSeats.filter(s => !isVIP(s));
-const vipTotal = vip.length * 40000;
-const regTotal = reg.length * 35000;
-const total    = vipTotal + regTotal;
+function calculatePrice(seats) {
 
-// TAMPILKAN DETAIL KURSI
-const seatDetailEl = document.getElementById("seatDetail");
-const totalEl      = document.getElementById("total");
+  let groups = {
+    first: [],
+    business: [],
+    economy: []
+  };
 
-if (seatDetailEl) {
-  seatDetailEl.innerHTML = "";
+  // kelompokin kursi
+  seats.forEach(seat => {
+    const tier = getTier(seat);
+    groups[tier].push(seat);
+  });
 
-  if (vip.length) {
-    const tagWrap = document.createElement("div");
-    tagWrap.style.cssText = "margin-bottom:8px;";
-    tagWrap.innerHTML = '<span style="font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:6px;">VIP × ' + vip.length + ' — Rp ' + vipTotal.toLocaleString() + '</span>';
-    const tags = document.createElement("div");
-    tags.style.cssText = "display:flex;flex-wrap:wrap;gap:6px;";
-    vip.forEach(s => {
-      const t = document.createElement("div");
-      t.className = "seat-tag"; t.textContent = s;
-      tags.appendChild(t);
-    });
-    tagWrap.appendChild(tags);
-    seatDetailEl.appendChild(tagWrap);
+  let total = 0;
+  let detailHTML = "";
+
+  function calcTier(name, arr, single, bundle) {
+    if (arr.length === 0) return;
+
+    const pair = Math.floor(arr.length / 2);
+    const singleCount = arr.length % 2;
+
+    const subtotal = (pair * bundle) + (singleCount * single);
+    total += subtotal;
+
+    detailHTML += `
+      ${name.toUpperCase()} x${arr.length} (${arr.join(", ")}) 
+      = Rp ${subtotal.toLocaleString()} <br>
+    `;
   }
 
-  if (reg.length) {
-    const tagWrap = document.createElement("div");
-    tagWrap.innerHTML = '<span style="font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px;">Reguler × ' + reg.length + ' — Rp ' + regTotal.toLocaleString() + '</span>';
-    const tags = document.createElement("div");
-    tags.style.cssText = "display:flex;flex-wrap:wrap;gap:6px;";
-    reg.forEach(s => {
-      const t = document.createElement("div");
-      t.className = "seat-tag"; t.textContent = s;
-      t.style.background = "var(--blue-accent)"; t.style.color = "var(--white)";
-      tags.appendChild(t);
-    });
-    tagWrap.appendChild(tags);
-    seatDetailEl.appendChild(tagWrap);
-  }
-}
+  calcTier("First Class", groups.first, 50000, 90000);
+  calcTier("Business", groups.business, 45000, 80000);
+  calcTier("Economy", groups.economy, 35000, 60000);
 
-if (totalEl) {
-  totalEl.textContent = "Rp " + total.toLocaleString("id-ID");
+  return { total, detailHTML };
 }
+// 🔥 HITUNG SEKALI DI AWAL (FIX BUG)
+const result = calculatePrice(selectedSeats);
+const total = result.total;
 
-// UNLOCK: lepas lock semua kursi sesi ini di Firestore
+// 🔥 TAMPILKAN
+document.getElementById("seatDetail").innerHTML = result.detailHTML;
+document.getElementById("total").innerText =
+  `Total ${selectedSeats.length} kursi = Rp ${total.toLocaleString()}`;
+
+// 🔓 UNLOCK
 async function unlockMySeats() {
-  await Promise.all(selectedSeats.map(id => deleteDoc(doc(db, "seatLocks", id))));
+  await Promise.all(
+    selectedSeats.map(id => deleteDoc(doc(db, "seatLocks", id)))
+  );
 }
 
 // COUNTDOWN TIMER
