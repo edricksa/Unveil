@@ -89,7 +89,7 @@ function createSeat(id) {
 
 // ── Generate layout ──
 const tiers = [
-  { name: "FIRST CLASS", rows: ["A","B","C"] },
+  { name: "LUXURY", rows: ["A","B","C"] },
   { name: "BUSINESS", rows: ["D","E","F","G"] },
   { name: "ECONOMY", rows: ["H","I","J","K","L","M","N","O"] }
 ];
