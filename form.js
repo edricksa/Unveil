@@ -77,7 +77,7 @@ function calculatePrice(seats) {
     `;
   }
 
-  calcTier("First Class", groups.first, 50000, 90000);
+  calcTier("Luxury", groups.first, 50000, 90000);
   calcTier("Business", groups.business, 45000, 80000);
   calcTier("Economy", groups.economy, 35000, 60000);
 
