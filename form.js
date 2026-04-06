@@ -79,7 +79,7 @@ function calculatePrice(seats) {
 
   calcTier("Luxury", groups.first, 50000, 90000);
   calcTier("Business", groups.business, 45000, 80000);
-  calcTier("Economy", groups.economy, 35000, 60000);
+  calcTier("Economy", groups.economy, 35000, 65000);
 
   return { total, detailHTML };
 }
